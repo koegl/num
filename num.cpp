@@ -14,6 +14,12 @@ class Array {
 public:
 
     // CONSTRUCTORS
+    Array() {
+        length_of_array = 0;
+        data = nullptr;
+        dtype_value = "None";
+    }
+
     explicit Array(const std::list<double> & myArguments) {
 
         length_of_array = myArguments.size();
