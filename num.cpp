@@ -461,6 +461,29 @@ public:
 //
 //        return sum;
 //    }
+
+    // identity
+    static Array eye(int n) {
+        auto *data = new double*[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = new double[n];
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    data[i][j] = 1;
+                }
+                else {
+                    data[i][j] = 0;
+                }
+            }
+        }
+
+        Array result = transformDataToArray(data, n, n);
+
+        return result;
+    }
     std::string dtype() const{
         return dtype_value;
     }
