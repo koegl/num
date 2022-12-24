@@ -154,6 +154,24 @@ public:
         return result;
     }
 
+    // multiply by scalar
+    Array operator*(const double & other) const {
+
+        std::list<std::list<double>> result_data = {};
+
+        for (int i = 0; i < rows_v; i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < columns_v; j++) {
+                row.push_back(data[i][j] * other);
+            }
+            result_data.push_back(row);
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+
     // divide element-wise
     Array operator/(const Array & other) const {
 
