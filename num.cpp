@@ -36,8 +36,6 @@ public:
         auto it = myArguments.begin();
         for (int i = 0; i < rows_v; i++) {
 
-            std::cout << (*it).size() << std::endl;
-
             if ((*it).size() != current) {
                 throw std::invalid_argument("All rows must have the same length");
             }
@@ -90,7 +88,6 @@ public:
 
         return result;
     }
-
 
     // subtract
     Array operator-(const Array & other) const {
@@ -195,7 +192,7 @@ public:
             throw std::out_of_range(text);
         }
     }
-    
+
     // DESTRUCTOR
     ~Array(){
         for (int i = 0; i < rows_v; i++)
@@ -251,115 +248,115 @@ public:
         }
     }
 
+/*
+    // METHODS
+    void append(double new_value) {
 
-//    // METHODS
-//    void append(double new_value) {
-//
-//        // create new array with one more element
-//        auto *new_data = new double[length_of_array + 1];
-//
-//        // copy old data to new array
-//        for (int i = 0; i < length_of_array; i++) {
-//            new_data[i] = data[i];
-//        }
-//
-//        // add new value to the end of the array
-//        new_data[length_of_array] = new_value;
-//
-//        // delete old array
-//        delete[] data;
-//
-//        // set new array as data
-//        data = new_data;
-//
-//        // increase length of array
-//        length_of_array++;
-//    }
-//
-//    double pop(int idx) {
-//
-//        if (idx < 0) {
-//            throw std::out_of_range("Index must be positive");
-//        }
-//        else if (idx >= length_of_array) {
-//            throw std::out_of_range("Index too big. Maximal index is " + std::to_string(length_of_array - 1));
-//        }
-//
-//        double popped_value = data[idx];
-//
-//        // create new array with one less element
-//        auto *new_data = new double[length_of_array - 1];
-//
-//        // copy old data to new array
-//        for (int i = 0; i < idx; i++) {
-//            new_data[i] = data[i];
-//        }
-//
-//        for (int i = idx; i < length_of_array - 1; i++) {
-//            new_data[i] = data[i + 1];
-//        }
-//
-//        // delete old array
-//        delete[] data;
-//
-//        // set new array as data
-//        data = new_data;
-//
-//        // decrease length of array
-//        length_of_array--;
-//
-//        return popped_value;
-//    }
-//
-//    void sort(bool reverse = false){
-//        // quicksort
-//        quicksort(data, 0, length_of_array - 1, reverse);
-//    }
-//
-//    Array nonzero() const {
-//        std::list<double> result_data = {};
-//
-//        for (int i = 0; i < length_of_array; i++) {
-//            if (data[i] != 0){
-//                result_data.push_back(data[i]);
-//            }
-//        }
-//
-//        Array result = Array(result_data);
-//
-//        return result;
-//    }
-//
-//    Array cumsum() const {
-//        std::list<double> result_data = {};
-//
-//        double sum = 0;
-//
-//        for (int i = 0; i < length_of_array; i++) {
-//            sum += data[i];
-//            result_data.push_back(sum);
-//        }
-//
-//        Array result = Array(result_data);
-//
-//        return result;
-//    }
-//
-//    Array cumprod() const {
-//        std::list<double> result_data = {};
-//
-//        double product = 1;
-//
-//        for (int i = 0; i < length_of_array; i++) {
-//            product *= data[i];
-//            result_data.push_back(product);
-//        }
-//
-//        Array result = Array(result_data);
-//
-//        return result;
-//    }
-//
+        // create new array with one more element
+        auto *new_data = new double[length_of_array + 1];
+
+        // copy old data to new array
+        for (int i = 0; i < length_of_array; i++) {
+            new_data[i] = data[i];
+        }
+
+        // add new value to the end of the array
+        new_data[length_of_array] = new_value;
+
+        // delete old array
+        delete[] data;
+
+        // set new array as data
+        data = new_data;
+
+        // increase length of array
+        length_of_array++;
+    }
+
+    double pop(int idx) {
+
+        if (idx < 0) {
+            throw std::out_of_range("Index must be positive");
+        }
+        else if (idx >= length_of_array) {
+            throw std::out_of_range("Index too big. Maximal index is " + std::to_string(length_of_array - 1));
+        }
+
+        double popped_value = data[idx];
+
+        // create new array with one less element
+        auto *new_data = new double[length_of_array - 1];
+
+        // copy old data to new array
+        for (int i = 0; i < idx; i++) {
+            new_data[i] = data[i];
+        }
+
+        for (int i = idx; i < length_of_array - 1; i++) {
+            new_data[i] = data[i + 1];
+        }
+
+        // delete old array
+        delete[] data;
+
+        // set new array as data
+        data = new_data;
+
+        // decrease length of array
+        length_of_array--;
+
+        return popped_value;
+    }
+
+    void sort(bool reverse = false){
+        // quicksort
+        quicksort(data, 0, length_of_array - 1, reverse);
+    }
+
+    Array nonzero() const {
+        std::list<double> result_data = {};
+
+        for (int i = 0; i < length_of_array; i++) {
+            if (data[i] != 0){
+                result_data.push_back(data[i]);
+            }
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+
+    Array cumsum() const {
+        std::list<double> result_data = {};
+
+        double sum = 0;
+
+        for (int i = 0; i < length_of_array; i++) {
+            sum += data[i];
+            result_data.push_back(sum);
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+
+    Array cumprod() const {
+        std::list<double> result_data = {};
+
+        double product = 1;
+
+        for (int i = 0; i < length_of_array; i++) {
+            product *= data[i];
+            result_data.push_back(product);
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+*/
     int rows() const {
         return rows_v;
     }
