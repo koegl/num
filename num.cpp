@@ -484,11 +484,75 @@ public:
 
         return result;
     }
+
+    void inverse() {
+
+        int n = rows();
+
+        auto** result = new double*[n];
+        for (int i = 0; i < n; i++) {
+            result[i] = new double[n];
+        }
+
+        auto** temp = new double*[n];
+        for (int i = 0; i < n; i++) {
+            temp[i] = new double[n];
+        }
+
+        auto** identity = new double*[n];
+        for (int i = 0; i < n; i++) {
+            identity[i] = new double[n];
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    identity[i][j] = 1;
+                }
+                else {
+                    identity[i][j] = 0;
+                }
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                temp[i][j] = data[i][j];
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                result[i][j] = identity[i][j];
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+
+            double pivot = temp[i][i];
+            for (int j = 0; j < n; j++) {
+                temp[i][j] /= pivot;
+                result[i][j] /= pivot;
+            }
+
+            for (int j = 0; j < n; j++) {
+                if (j != i) {
+                    double factor = temp[j][i];
+                    for (int k = 0; k < n; k++) {
+                        temp[j][k] -= factor * temp[i][k];
+                        result[j][k] -= factor * result[i][k];
+                    }
+                }
+            }
+        }
+
+    data = result;
+    }
+
     std::string dtype() const{
         return dtype_value;
     }
 
-    // 2d pointer data
     double **data;
 private:
     std::string dtype_value;
