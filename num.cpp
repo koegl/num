@@ -174,23 +174,87 @@ public:
     }
 
     void print() const {
+
+        std::vector<std::string> output;
+        std::string row;
+
+        row += "[";
+
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                std::cout << data[i][j] << " ";
+
+            if (i == 0) {
+                row += "[";
             }
-            std::cout << std::endl;
+            else {
+                row += " [";
+            }
+
+            for (int j = 0; j < columns-1; j++) {
+
+                std::ostringstream oss;
+                oss << std::setprecision(8) << std::noshowpoint << data[i][j];
+
+                row += oss.str();
+                row += ", ";
+            }
+
+            std::ostringstream oss;
+            oss << std::setprecision(15) << std::noshowpoint << data[i][columns-1];
+
+            row += oss.str();
+            row += "]";
+
+            if (i != rows-1) {
+                row +=  ",";
+            }
+            else {
+                row += "]";
+            }
+
+            output.push_back(row);
+            row = "";
+
+        }
+
+        for (auto & i : output) {
+            std::cout << i << std::endl;
         }
     }
+//        std::cout <<"[";
+//
+//        for (int i = 0; i < rows; i++) {
+//
+//            if (i == 0) {
+//                std::cout << "[";
+//            }
+//            else {
+//                std::cout << " [";
+//            }
+//
+//            for (int j = 0; j < columns-1; j++) {
+//
+//                std::cout << data[i][j] << ", ";
+//            }
+//            std::cout <<data[i][columns-1] << "]";
+//
+//            if (i != rows-1) {
+//                std::cout << "," << std::endl;
+//            }
+//            else {
+//                std::cout << "]" << std::endl;
+//            }
+//        }
+//    }
 
 //    // METHODS
 //    void print() const {
-//        std::cout <<"Array([";
+//        std::cout <<"[";
 //
 //        for (int i = 0; i < length_of_array - 1; i++) {
 //            std::cout << data[i] << ", ";
 //        }
 //
-//        std::cout << data[length_of_array - 1] << ")]" << std::endl;
+//        std::cout << data[length_of_array - 1] << "]" << std::endl;
 //    }
 //
 //    void append(double new_value) {
