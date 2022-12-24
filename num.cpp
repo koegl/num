@@ -395,6 +395,19 @@ public:
         return indices;
     }
 
+    double min() const{
+        double min = data[0][0];
+
+        for (int i = 0; i < rows_v; i++){
+            for (int j = 0; j < columns_v; j++){
+                if (data[i][j] < min){
+                    min = data[i][j];
+                }
+            }
+        }
+
+        return min;
+    }
 //
 //    double min() const{
 //        double min = data[0];
