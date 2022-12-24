@@ -426,31 +426,18 @@ public:
         return indices;
     }
 
-//
-//    double min() const{
-//        double min = data[0];
-//
-//        for (int i = 0; i < length_of_array; i++){
-//            if (data[i] < min) {
-//                min = data[i];
-//            }
-//        }
-//
-//        return min;
-//    }
-//    int argmin() const{
-//        double min = data[0];
-//        int argmin = 0;
-//
-//        for (int i = 0; i < length_of_array; i++){
-//            if (data[i] < min) {
-//                min = data[i];
-//                argmin = i;
-//            }
-//        }
-//
-//        return argmin;
-//    }
+    double sum() const{
+        double sum = 0;
+
+        for (int i = 0; i < rows_v; i++){
+            for (int j = 0; j < columns_v; j++){
+                sum += data[i][j];
+            }
+        }
+
+        return sum;
+    }
+
 //
 //    double sum() const{
 //        double sum = 0;
