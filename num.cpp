@@ -408,6 +408,24 @@ public:
 
         return min;
     }
+
+    std::vector<int> argmin() const{
+        double min = data[0][0];
+        std::vector<int> indices = {0, 0};
+
+        for (int i = 0; i < rows_v; i++){
+            for (int j = 0; j < columns_v; j++){
+                if (data[i][j] < min){
+                    min = data[i][j];
+                    indices[0] = i;
+                    indices[1] = j;
+                }
+            }
+        }
+
+        return indices;
+    }
+
 //
 //    double min() const{
 //        double min = data[0];
