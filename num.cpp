@@ -377,19 +377,24 @@ public:
 
         return max;
     }
-//    int argmax() const{
-//        double max = data[0];
-//        int argmax = 0;
-//
-//        for (int i = 0; i < length_of_array; i++){
-//            if (data[i] > max) {
-//                max = data[i];
-//                argmax = i;
-//            }
-//        }
-//
-//        return argmax;
-//    }
+
+    std::vector<int> argmax() const{
+        double max = data[0][0];
+        std::vector<int> indices = {0, 0};
+
+        for (int i = 0; i < rows_v; i++){
+            for (int j = 0; j < columns_v; j++){
+                if (data[i][j] > max){
+                    max = data[i][j];
+                    indices[0] = i;
+                    indices[1] = j;
+                }
+            }
+        }
+
+        return indices;
+    }
+
 //
 //    double min() const{
 //        double min = data[0];
