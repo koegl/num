@@ -492,17 +492,33 @@ public:
         data = result;
     }
 
+    static Array mult(const Array &a1, const Array &a2){
 
-//
-//    double sum() const{
-//        double sum = 0;
-//
-//        for (int i = 0; i < length_of_array; i++){
-//            sum += data[i];
-//        }
-//
-//        return sum;
-//    }
+        if (a1.rows() != a2.columns() || a1.columns() != a2.rows()){
+            throw std::invalid_argument("Incompatible array shapes");
+        }
+
+        // Allocate memory for the rows of the array
+        double **result;
+        result = new double* [a1.rows()];
+        // Allocate memory for the columns of the array
+        for (int i = 0; i < a1.rows(); i++)
+            result[i] = new double[a2.columns()];
+
+        double sum = 0;
+
+        for (int i = 0; i < a1.rows(); i++){
+            for (int j = 0; j < a2.columns(); j++){
+                for (int k = 0; k < a1.columns(); k++){
+                    sum += a1.data[i][k] * a2.data[k][j];
+                }
+                result[i][j] = sum;
+                sum = 0;
+            }
+        }
+
+        return Array(transformDataToArray(result, a1.rows(), a2.columns()));
+    }
 
     // identity
     static Array eye(int n) {
@@ -670,7 +686,6 @@ private:
 
 namespace {
     void print(const Array &myArray);
-
 
     void print(const Array &myArray) {
 
