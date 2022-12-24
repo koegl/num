@@ -455,7 +455,25 @@ public:
         }
 
         return sum;
+    void transpose() {
+        auto** result = new double*[columns_v];
+        for (int i = 0; i < columns_v; i++) {
+            result[i] = new double[rows_v];
+        }
+
+        for (int i = 0; i < rows_v; i++) {
+            for (int j = 0; j < columns_v; j++) {
+                result[j][i] = data[i][j];
+            }
+        }
+
+        int temp = rows_v;
+        rows_v = columns_v;
+        columns_v = temp;
+
+        data = result;
     }
+
 
 //
 //    double sum() const{
