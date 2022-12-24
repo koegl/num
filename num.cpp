@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <iostream>
 #include <limits>
+#include <vector>
+#include <sstream>
+#include <iomanip>
 
 #include "sorting.h"
 
@@ -15,7 +18,8 @@ public:
 
     // CONSTRUCTORS
     Array() {
-        length_of_array = 0;
+        rows = 0;
+        columns = 0;
         data = nullptr;
         dtype_value = "None";
     }
@@ -36,8 +40,6 @@ public:
             if ((*it).size() != current) {
                 throw std::invalid_argument("All rows must have the same length");
             }
-
-
             it++;
         }
 
@@ -368,17 +370,19 @@ public:
 //        return length_of_array;
 //    }
 //
-//    double max() const{
-//        double max = data[0];
-//
-//        for (int i = 0; i < length_of_array; i++){
-//            if (data[i] > max) {
-//                max = data[i];
-//            }
-//        }
-//
-//        return max;
-//    }
+    double max() const{
+        double max = data[0][0];
+
+        for (int i = 0; i < rows; i++){
+            for (int j = 0; j < columns; j++){
+                if (data[i][j] > max){
+                    max = data[i][j];
+                }
+            }
+        }
+
+        return max;
+    }
 //    int argmax() const{
 //        double max = data[0];
 //        int argmax = 0;
@@ -436,10 +440,7 @@ public:
     int rows;
     int columns;
 private:
-
-
     std::string dtype_value;
-    int length_of_array;
 
 
 };
