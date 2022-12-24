@@ -435,6 +435,23 @@ private:
     std::string dtype_value;
     int rows_v;
     int columns_v;
+
+    static Array transformDataToArray(double **data, int rows, int columns){
+        std::list<std::list<double>> result_data = {};
+
+        for (int i = 0; i < rows; i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < columns; j++) {
+                row.push_back(data[i][j]);
+            }
+            result_data.push_back(row);
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+
 };
 
 namespace {
