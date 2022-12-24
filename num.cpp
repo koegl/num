@@ -216,6 +216,39 @@ public:
         return data[row];
     }
 
+    // assignment operator
+    Array& operator=(const Array & other) {
+
+        if (this != &other) {
+
+            // Free memory
+            for (int i = 0; i < rows_v; i++)
+                delete[] data[i];
+            delete[] data;
+
+            // Copy data
+            rows_v = other.rows();
+            columns_v = other.columns();
+
+            // Allocate memory for the rows of the array
+            data = new double* [rows_v];
+
+            // Allocate memory for the columns of the array
+            for (int i = 0; i < rows_v; i++)
+                data[i] = new double[columns_v];
+
+            for (int i = 0; i < rows_v; i++) {
+                for (int j = 0; j < columns_v; j++) {
+                    data[i][j] = other.data[i][j];
+                }
+            }
+        }
+
+        dtype_value = other.dtype();
+
+        return *this;
+    }
+
     void checkIndex(std::size_t row, std::size_t col) const {
 
         if (row < 0 || col < 0) {
