@@ -581,6 +581,17 @@ private:
         return result;
     }
 
+    static Array transformDataToArray(double *data, int length){
+        std::list<double> result_data = {};
+
+        for (int i = 0; i < length; i++) {
+            result_data.push_back(data[i]);
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
 };
 
 namespace {
