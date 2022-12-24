@@ -15,25 +15,26 @@
 
 class Array {
 public:
+    // todo add shape
 
     // CONSTRUCTORS
     Array() {
-        rows = 0;
-        columns = 0;
+        rows_v = 0;
+        columns_v = 0;
         data = nullptr;
         dtype_value = "None";
     }
 
     explicit Array(const std::list<std::list<double>> & myArguments) {
 
-        rows = myArguments.size();
-        columns = myArguments.front().size();
+        rows_v = myArguments.size();
+        columns_v = myArguments.front().size();
 
-        int current = columns;
+        int current = columns_v;
 
         // check if all rows have the same length
         auto it = myArguments.begin();
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < rows_v; i++) {
 
             std::cout << (*it).size() << std::endl;
 
@@ -44,18 +45,18 @@ public:
         }
 
         // Allocate memory for the rows of the array
-        data = new double* [rows];
+        data = new double* [rows_v];
 
         // Allocate memory for the columns of the array
-        for (int i = 0; i < rows; i++)
-            data[i] = new double[columns];
+        for (int i = 0; i < rows_v; i++)
+            data[i] = new double[columns_v];
 
         auto it_rows = myArguments.begin();
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < rows_v; i++) {
 
             auto it_cols = (*it_rows).begin();
 
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < columns_v; j++) {
                 data[i][j] = *it_cols;
                 it_cols++;
             }
@@ -68,38 +69,46 @@ public:
 
     // OPERATORS
     // add
-//    Array operator+(const Array & other) const {
-//
-//        if (length_of_array != other.length()){
-//            throw std::invalid_argument("Arrays must have the same length to perform addition (+).\nError in line " + std::to_string(__LINE__));
-//        }
-//
-//        std::list<double> result_data = {};
-//
-//        for (int i = 0; i < length_of_array; i++) {
-//            result_data.push_back(data[i] + other.data[i]);
-//
-//        }
-//
-//        Array result = Array(result_data);
-//
-//        return result;
-//    }
+    Array operator+(const Array & other) const {
 
-    /*
+        if (rows_v != other.rows() || columns_v != other.columns()) {
+            throw std::invalid_argument("Arrays must have the same size to perform addition (+).\nError in line " + std::to_string(__LINE__));
+        }
+
+        std::list<std::list<double>> result_data = {};
+
+        for (int i = 0; i < rows_v; i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < columns_v; j++) {
+                row.push_back(data[i][j] + other.data[i][j]);
+            }
+            result_data.push_back(row);
+        }
+
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+
+
     // subtract
     Array operator-(const Array & other) const {
 
-        if (length_of_array != other.length()){
-            throw std::invalid_argument("Arrays must have the same length to perform addition (+).\nError in line " + std::to_string(__LINE__));
+        if (rows_v != other.rows() || columns_v != other.columns()) {
+            throw std::invalid_argument("Arrays must have the same size to perform subtraction (-).\nError in line " + std::to_string(__LINE__));
         }
 
-        std::list<double> result_data = {};
+        std::list<std::list<double>> result_data = {};
 
-        for (int i = 0; i < length_of_array; i++) {
-            result_data.push_back(data[i] - other.data[i]);
-
+        for (int i = 0; i < rows_v; i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < columns_v; j++) {
+                row.push_back(data[i][j] - other.data[i][j]);
+            }
+            result_data.push_back(row);
         }
+
 
         Array result = Array(result_data);
 
@@ -107,17 +116,22 @@ public:
     }
 
     // multiply element-wise
-    Array operator*(const Array & other) const{
+    Array operator*(const Array & other) const {
 
-        if (length_of_array != other.length()){
-            throw std::invalid_argument("Arrays must have the same length to perform addition (+).\nError in line " + std::to_string(__LINE__));
+        if (rows_v != other.rows() || columns_v != other.columns()) {
+            throw std::invalid_argument("Arrays must have the same size to perform elementwise multiplication (*).\nError in line " + std::to_string(__LINE__));
         }
 
-        std::list<double> result_data = {};
+        std::list<std::list<double>> result_data = {};
 
-        for (int i = 0; i < length_of_array; i++) {
-            result_data.push_back(data[i] * other.data[i]);
+        for (int i = 0; i < rows_v; i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < columns_v; j++) {
+                row.push_back(data[i][j] * other.data[i][j]);
+            }
+            result_data.push_back(row);
         }
+
 
         Array result = Array(result_data);
 
@@ -125,30 +139,35 @@ public:
     }
 
     // divide element-wise
-    Array operator/(const Array & other) const{
+    Array operator/(const Array & other) const {
 
-        if (length_of_array != other.length()){
-            throw std::invalid_argument("Arrays must have the same length to perform addition (+).\nError in line " + std::to_string(__LINE__));
+        if (rows_v != other.rows() || columns_v != other.columns()) {
+            throw std::invalid_argument("Arrays must have the same size to perform addition (+).\nError in line " + std::to_string(__LINE__));
         }
 
-        std::list<double> result_data = {};
+        std::list<std::list<double>> result_data = {};
 
-        for (int i = 0; i < length_of_array; i++) {
+        for (int i = 0; i < rows_v; i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < columns_v; j++) {
 
-            double divisor = other.data[i];
+                double divisor = other.data[i][j];
 
-            if (divisor == 0){
+                if (divisor == 0){
 
-                std::string text = "Error in line " + std::to_string(__LINE__) + "." +
-                                   " Cannot divide by zero at index " + std::to_string(i) + "." +
-                                   " Setting result to infinity (" + std::to_string(std::numeric_limits<double>::infinity()) + ").";
-                result_data.push_back(std::numeric_limits<double>::infinity());
-                std::cout << text << std::endl;
-                continue;
+                    std::string text = "Error in line " + std::to_string(__LINE__) + "." +
+                                       " Cannot divide by zero at index " + std::to_string(i) + "." +
+                                       " Setting result to infinity (" + std::to_string(std::numeric_limits<double>::infinity()) + ").";
+                    row.push_back(std::numeric_limits<double>::infinity());
+                    std::cout << text << std::endl;
+                    continue;
+                }
+
+                row.push_back(data[i][j] / other.data[i][j]);
             }
-
-            result_data.push_back(data[i] / other.data[i]);
+            result_data.push_back(row);
         }
+
 
         Array result = Array(result_data);
 
@@ -156,21 +175,30 @@ public:
     }
 
     // access
-    double &operator[] (int idx) const{
-        if (idx < 0) {
+    double* operator[](std::size_t row) const{
+
+        checkIndex(row, 0);
+
+        return data[row];
+    }
+
+    void checkIndex(std::size_t row, std::size_t col) const {
+
+        if (row < 0 || col < 0) {
             throw std::out_of_range("Index must be positive");
         }
-        else if (idx >= length_of_array) {
-            throw std::out_of_range("Index too big. Maximal index is " + std::to_string(length_of_array - 1));
+
+        if (row >= rows_v || col >= columns_v) {
+            std::string text = "Index out of range. Maximal row index index is " + std::to_string(row - 1) +
+                               " and maximal column index is " + std::to_string(col - 1);
+
+            throw std::out_of_range(text);
         }
-
-        return data[idx];
     }
-    */
-
+    
     // DESTRUCTOR
     ~Array(){
-        for (int i = 0; i < rows; i++)
+        for (int i = 0; i < rows_v; i++)
             delete[] data[i];
         delete[] data;
     }
@@ -182,7 +210,7 @@ public:
 
         row += "[";
 
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < rows_v; i++) {
 
             if (i == 0) {
                 row += "[";
@@ -191,7 +219,7 @@ public:
                 row += " [";
             }
 
-            for (int j = 0; j < columns-1; j++) {
+            for (int j = 0; j < columns_v-1; j++) {
 
                 std::ostringstream oss;
                 oss << std::setprecision(8) << std::noshowpoint << data[i][j];
@@ -201,12 +229,12 @@ public:
             }
 
             std::ostringstream oss;
-            oss << std::setprecision(15) << std::noshowpoint << data[i][columns-1];
+            oss << std::setprecision(15) << std::noshowpoint << data[i][columns_v-1];
 
             row += oss.str();
             row += "]";
 
-            if (i != rows-1) {
+            if (i != rows_v-1) {
                 row +=  ",";
             }
             else {
@@ -222,43 +250,9 @@ public:
             std::cout << i << std::endl;
         }
     }
-//        std::cout <<"[";
-//
-//        for (int i = 0; i < rows; i++) {
-//
-//            if (i == 0) {
-//                std::cout << "[";
-//            }
-//            else {
-//                std::cout << " [";
-//            }
-//
-//            for (int j = 0; j < columns-1; j++) {
-//
-//                std::cout << data[i][j] << ", ";
-//            }
-//            std::cout <<data[i][columns-1] << "]";
-//
-//            if (i != rows-1) {
-//                std::cout << "," << std::endl;
-//            }
-//            else {
-//                std::cout << "]" << std::endl;
-//            }
-//        }
-//    }
+
 
 //    // METHODS
-//    void print() const {
-//        std::cout <<"[";
-//
-//        for (int i = 0; i < length_of_array - 1; i++) {
-//            std::cout << data[i] << ", ";
-//        }
-//
-//        std::cout << data[length_of_array - 1] << "]" << std::endl;
-//    }
-//
 //    void append(double new_value) {
 //
 //        // create new array with one more element
@@ -366,15 +360,18 @@ public:
 //        return result;
 //    }
 //
-//    int length() const {
-//        return length_of_array;
-//    }
-//
+    int rows() const {
+        return rows_v;
+    }
+    int columns() const {
+        return columns_v;
+    }
+
     double max() const{
         double max = data[0][0];
 
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
+        for (int i = 0; i < rows_v; i++){
+            for (int j = 0; j < columns_v; j++){
                 if (data[i][j] > max){
                     max = data[i][j];
                 }
@@ -437,12 +434,10 @@ public:
 
     // 2d pointer data
     double **data;
-    int rows;
-    int columns;
 private:
     std::string dtype_value;
-
-
+    int rows_v;
+    int columns_v;
 };
 
 namespace {
@@ -452,9 +447,9 @@ namespace {
     void print(const Array &myArray) {
 
         std::cout << "Array([";
-        for (int i = 0; i < myArray.rows; i++) {
+        for (int i = 0; i < myArray.rows(); i++) {
             std::cout << myArray.data[i];
-            if (i != myArray.columns - 1) {
+            if (i != myArray.columns() - 1) {
                 std::cout << ", ";
             }
         }
