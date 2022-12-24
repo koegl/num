@@ -445,16 +445,34 @@ public:
         return indices;
     }
 
-    double sum() const{
-        double sum = 0;
+    Array sum() const {
+        auto *result_data = new double;
+
+        *result_data = 0;
 
         for (int i = 0; i < rows_v; i++){
             for (int j = 0; j < columns_v; j++){
-                sum += data[i][j];
+                *result_data += data[i][j];
             }
         }
 
-        return sum;
+        Array result = transformDataToArray(result_data, 1);
+
+        return result;
+    }
+
+    Array sum(int axis) const {
+        if (axis == 0){
+            return sum_rows();
+        }
+        else if (axis == 1){
+            return sum_columns();
+        }
+        else {
+            throw std::invalid_argument("Axis must be 0 or 1");
+        }
+    }
+
     void transpose() {
         auto** result = new double*[columns_v];
         for (int i = 0; i < columns_v; i++) {
@@ -610,6 +628,44 @@ private:
 
         return result;
     }
+
+    // sum along rows
+    Array sum_rows() const{
+        auto *result_data = new double[rows_v];
+
+        for (int i = 0; i < rows_v; i++){
+            double sum = 0;
+            for (int j = 0; j < columns_v; j++){
+                sum += data[i][j];
+            }
+            result_data[i] = sum;
+        }
+
+        Array result = transformDataToArray(result_data, rows_v);
+
+        return result;
+    }
+
+    Array sum_columns() const{
+        auto *result_data = new double[columns_v];
+
+        for (int i = 0; i < columns_v; i++){
+            double sum = 0;
+            for (int j = 0; j < rows_v; j++){
+                sum += data[j][i];
+            }
+            result_data[i] = sum;
+        }
+
+        Array result = transformDataToArray(result_data, columns_v);
+
+        result.transpose();
+
+        return result;
+    }
+
+
+
 };
 
 namespace {
