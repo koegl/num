@@ -104,6 +104,16 @@ public:
         dtype_value = "float64";
     }
 
+    Array(double **new_data, int rows, int columns, const std::string& dtype="float64") {
+        // Allocate memory for the rows of the array
+        data = new_data;
+
+        rows_v = rows;
+        columns_v = columns;
+
+        dtype_value = dtype;
+    }
+
     // OPERATORS
     // add
     Array operator+(const Array & other) const {
