@@ -23,13 +23,16 @@ public:
         columns_v = 0;
         data = nullptr;
         dtype_value = "None";
+        // initialize vector dimensions
+        dimensions = {0};
     }
-
 
     Array(const std::list<std::list<double>> & myArguments) {
 
         rows_v = myArguments.size();
         columns_v = myArguments.front().size();
+
+        dimensions = {rows_v, columns_v};
 
         int current = columns_v;
 
@@ -65,6 +68,7 @@ public:
 
         rows_v = other.rows_v;
         columns_v = other.columns_v;
+        dimensions = other.dimensions;
         dtype_value = other.dtype_value;
 
         // Allocate memory for the rows of the array
@@ -80,6 +84,7 @@ public:
     explicit Array(const std::list<double> & myArguments){
         rows_v = myArguments.size();
         columns_v = 1;
+        dimensions = {rows_v, columns_v};
 
         // Allocate memory for the rows of the array
         Array::allocate_data(&data, rows_v, columns_v);
@@ -98,6 +103,8 @@ public:
 
         rows_v = rows;
         columns_v = columns;
+
+        dimensions = {rows_v, columns_v};
 
         dtype_value = dtype;
     }
@@ -263,6 +270,31 @@ public:
     // todo when the array is 1x1 print without brackets, same for 1d (only one bracket)
     void print() const {
 
+        if (dimensions.size() == 1){
+            std::cout << "[]" << std::endl;
+            return;
+        }
+        else if (dimensions.size() == 2 && dimensions[0] == 1 && dimensions[1] == 1){
+            std::cout << "[" << data[0][0] << "]" << std::endl;
+            return;
+        }
+        else if (dimensions.size() == 2 && dimensions[1] == 1){
+            std::cout << "[";
+            for (int i = 0; i < rows_v-1; i++){
+                std::cout << data[i][0] << " ";
+            }
+            std::cout << data[rows_v-1][0] << "]" << std::endl;
+            return;
+        }
+        else if (dimensions.size() == 2 && dimensions[1] == 1){
+            std::cout << "[";
+            for (int i = 0; i < columns_v; i++){
+                std::cout << data[0][i] << std::endl;
+            }
+            std::cout << "]" << std::endl;
+            return;
+        }
+
         std::vector<std::string> output;
         std::string row;
 
@@ -309,6 +341,7 @@ public:
         }
     }
 
+    // todo those functions have to work when it's 1D
 /*
     // METHODS
     void append(double new_value) {
@@ -655,6 +688,8 @@ private:
     std::string dtype_value;
     int rows_v;
     int columns_v;
+
+    std::vector<int> dimensions;
 
     static void allocate_data(double ***data_array, int rows, int columns) {
         *data_array = new double*[rows];
