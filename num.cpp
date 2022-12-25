@@ -44,11 +44,7 @@ public:
         }
 
         // Allocate memory for the rows of the array
-        data = new double* [rows_v];
-
-        // Allocate memory for the columns of the array
-        for (int i = 0; i < rows_v; i++)
-            data[i] = new double[columns_v];
+        Array::allocate_data(&data, rows_v, columns_v);
 
         auto it_rows = myArguments.begin();
         for (int i = 0; i < rows_v; i++) {
@@ -72,11 +68,7 @@ public:
         dtype_value = other.dtype_value;
 
         // Allocate memory for the rows of the array
-        data = new double* [rows_v];
-
-        // Allocate memory for the columns of the array
-        for (int i = 0; i < rows_v; i++)
-            data[i] = new double[columns_v];
+        Array::allocate_data(&data, rows_v, columns_v);
 
         for (int i = 0; i < rows_v; i++) {
             for (int j = 0; j < columns_v; j++) {
@@ -90,11 +82,7 @@ public:
         columns_v = 1;
 
         // Allocate memory for the rows of the array
-        data = new double* [rows_v];
-
-        // Allocate memory for the columns of the array
-        for (int i = 0; i < rows_v; i++)
-            data[i] = new double[columns_v];
+        Array::allocate_data(&data, rows_v, columns_v);
 
         auto it_rows = myArguments.begin();
         for (int i = 0; i < rows_v; i++) {
@@ -106,7 +94,6 @@ public:
     }
 
     Array(double **new_data, int rows, int columns, const std::string& dtype="float64") {
-        // Allocate memory for the rows of the array
         data = new_data;
 
         rows_v = rows;
@@ -240,19 +227,7 @@ public:
             Array::delete_data(data, rows_v);
 
             // Allocate memory for the rows of the array
-            data = new double* [rows_v];
-
-            // Allocate memory for the columns of the array
-            for (int i = 0; i < rows_v; i++) {
-                data[i] = new double[columns_v];
-            }
-
-            // todo why doesn;t this work?
-            // Allocate memory for the rows of the array
-            //Array::allocate_data(new_data, rows_v, columns_v);
-
-//            std::cout << data[0][0] << std::endl;
-//            std::cout << other.data[0][0] << std::endl;
+            Array::allocate_data(&data, rows_v, columns_v);
 
             for (int i = 0; i < rows_v; i++) {
                 for (int j = 0; j < columns_v; j++) {
@@ -514,8 +489,8 @@ public:
 
     Array sum() const {
         double **result_data;
-        result_data = new double*[1];
-        result_data[0] = new double[1];
+
+        Array::allocate_data(&result_data, 1, 1);
 
         result_data[0][0] = 0;
 
@@ -543,10 +518,8 @@ public:
     }
 
     void transpose() {
-        auto** result = new double*[columns_v];
-        for (int i = 0; i < columns_v; i++) {
-            result[i] = new double[rows_v];
-        }
+        double **result;
+        allocate_data(&result, columns_v, rows_v);
 
         for (int i = 0; i < rows_v; i++) {
             for (int j = 0; j < columns_v; j++) {
@@ -571,10 +544,7 @@ public:
 
         // Allocate memory for the rows of the array
         double **result;
-        result = new double* [a1.rows()];
-        // Allocate memory for the columns of the array
-        for (int i = 0; i < a1.rows(); i++)
-            result[i] = new double[a2.columns()];
+        allocate_data(&result, a1.rows(), a2.columns());
 
         double sum = 0;
 
@@ -593,23 +563,23 @@ public:
 
     // identity
     static Array eye(int n) {
-        auto *data = new double*[n];
-        for (int i = 0; i < n; i++) {
-            data[i] = new double[n];
-        }
+
+        double **result;
+
+        Array::allocate_data(&result, n, n);
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i == j) {
-                    data[i][j] = 1;
+                    result[i][j] = 1;
                 }
                 else {
-                    data[i][j] = 0;
+                    result[i][j] = 0;
                 }
             }
         }
 
-        return Array(data, n, n);
+        return Array(result, n, n);
     }
 
     void inverse() {
@@ -620,20 +590,14 @@ public:
             throw std::invalid_argument("Matrix must be square");
         }
 
-        auto** result = new double*[n];
-        for (int i = 0; i < n; i++) {
-            result[i] = new double[n];
-        }
+        double** result;
+        allocate_data(&result, n, n);
 
-        auto** temp = new double*[n];
-        for (int i = 0; i < n; i++) {
-            temp[i] = new double[n];
-        }
+        double** temp;
+        allocate_data(&temp, n, n);
 
-        auto** identity = new double*[n];
-        for (int i = 0; i < n; i++) {
-            identity[i] = new double[n];
-        }
+        double** identity;
+        allocate_data(&identity, n, n);
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -692,18 +656,13 @@ private:
     int rows_v;
     int columns_v;
 
-    // todo use this function everywhere
-    static void allocate_data(double **data_array, int rows, int columns) {
-        // Allocate memory for the rows of the array
-        data_array = new double* [rows];
-
-        // Allocate memory for the columns of the array
+    static void allocate_data(double ***data_array, int rows, int columns) {
+        *data_array = new double*[rows];
         for (int i = 0; i < rows; i++) {
-            data_array[i] = new double[columns];
+            (*data_array)[i] = new double[columns];
         }
     }
 
-    // todo use this function everywhere
     static void delete_data(double** data_to_delete, int n_rows){
         for (int i = 0; i < n_rows; i++){
             delete[] data_to_delete[i];
@@ -711,59 +670,24 @@ private:
         delete[] data_to_delete;
     }
 
-    /*
-    static Array transformDataToArray(double **data, int rows, int columns){
-        std::list<std::list<double>> result_data = {};
-
-        for (int i = 0; i < rows; i++) {
-            std::list<double> row = {};
-            for (int j = 0; j < columns; j++) {
-                row.push_back(data[i][j]);
-            }
-            result_data.push_back(row);
-        }
-
-        Array result = Array(result_data);
-
-        return result;
-    }
-
-    static Array transformDataToArray(double *data, int length){
-        std::list<double> result_data = {};
-
-        for (int i = 0; i < length; i++) {
-            result_data.push_back(data[i]);
-        }
-
-        Array result = Array(result_data);
-
-        return result;
-    }
-    */
-
     // sum along rows
     Array sum_rows() const{
 
         // Allocate memory for the rows of the array
         double **result_data;
 
-        Array::allocate_data(result_data, rows_v, 1);
-
-        result_data = new double* [rows_v];
-
-        // Allocate memory for the columns of the array
-        for (int i = 0; i < rows_v; i++)
-            result_data[i] = new double[1];
+        Array::allocate_data(&result_data, rows_v, 1);
 
         for (int i = 0; i < rows_v; i++){
-            auto *sum = new double[1];
+            double sum = 0;
             for (int j = 0; j < columns_v; j++){
-                sum[0] += data[i][j];
+                sum += data[i][j];
             }
-            result_data[i] = sum;
+            result_data[i][0] = sum;
         }
 
         Array result = Array(result_data, rows_v, 1);
+
 
         return result;
     }
@@ -773,7 +697,7 @@ private:
         // Allocate memory for the rows of the array
         double **result_data;
 
-        Array::allocate_data(result_data, 1, columns_v);
+        Array::allocate_data(&result_data, 1, columns_v);
 
         for (int i = 0; i < columns_v; i++){
             double sum = 0;
@@ -838,18 +762,6 @@ namespace {
 
         return result;
     }
-
-//    // Overload the operator for other types
-//    MyType operator*(const MyType& lhs, int rhs) {
-//        // Implement the multiplication behavior for MyType and int
-//        // Return a new instance of MyType with the result of the multiplication
-//    }
-//
-//    MyType operator*(int lhs, const MyType& rhs) {
-//        // Implement the multiplication behavior for int and MyType
-//        // Return a new instance of MyType with the result of the multiplication
-//    }
-//
 }
 
 
