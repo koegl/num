@@ -693,11 +693,33 @@ public:
     }
 
     double **data;
+
 private:
+
     std::string dtype_value;
     int rows_v;
     int columns_v;
 
+    // todo use this function everywhere
+    static void allocate_data(double **data_array, int rows, int columns) {
+        // Allocate memory for the rows of the array
+        data_array = new double* [rows];
+
+        // Allocate memory for the columns of the array
+        for (int i = 0; i < rows; i++) {
+            data_array[i] = new double[columns];
+        }
+    }
+
+    // todo use this function everywhere
+    static void delete_data(double** data_to_delete, int n_rows){
+        for (int i = 0; i < n_rows; i++){
+            delete[] data_to_delete[i];
+        }
+        delete[] data_to_delete;
+    }
+
+    /*
     static Array transformDataToArray(double **data, int rows, int columns){
         std::list<std::list<double>> result_data = {};
 
