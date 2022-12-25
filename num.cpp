@@ -64,6 +64,26 @@ public:
         dtype_value = "float64";
     }
 
+    Array(const Array & other) {
+
+        rows_v = other.rows_v;
+        columns_v = other.columns_v;
+        dtype_value = other.dtype_value;
+
+        // Allocate memory for the rows of the array
+        data = new double* [rows_v];
+
+        // Allocate memory for the columns of the array
+        for (int i = 0; i < rows_v; i++)
+            data[i] = new double[columns_v];
+
+        for (int i = 0; i < rows_v; i++) {
+            for (int j = 0; j < columns_v; j++) {
+                data[i][j] = other.data[i][j];
+            }
+        }
+    }
+
     explicit Array(const std::list<double> & myArguments){
         rows_v = myArguments.size();
         columns_v = 1;
