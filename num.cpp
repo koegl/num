@@ -9,9 +9,9 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
+#include <string>
 
 #include "sorting.h"
-
 
 class Array {
 public:
@@ -25,7 +25,8 @@ public:
         dtype_value = "None";
     }
 
-    explicit Array(const std::list<std::list<double>> & myArguments) {
+
+    Array(const std::list<std::list<double>> & myArguments) {
 
         rows_v = myArguments.size();
         columns_v = myArguments.front().size();
@@ -155,7 +156,6 @@ public:
             result_data.push_back(row);
         }
 
-
         Array result = Array(result_data);
 
         return result;
@@ -178,24 +178,6 @@ public:
             result_data.push_back(row);
         }
 
-
-        Array result = Array(result_data);
-
-        return result;
-    }
-
-    // multiply by scalar
-    Array operator*(const double & other) const {
-
-        std::list<std::list<double>> result_data = {};
-
-        for (int i = 0; i < rows_v; i++) {
-            std::list<double> row = {};
-            for (int j = 0; j < columns_v; j++) {
-                row.push_back(data[i][j] * other);
-            }
-            result_data.push_back(row);
-        }
 
         Array result = Array(result_data);
 
@@ -251,30 +233,35 @@ public:
 
         if (this != &other) {
 
-            // Free memory
-            for (int i = 0; i < rows_v; i++)
-                delete[] data[i];
-            delete[] data;
-
             // Copy data
             rows_v = other.rows();
             columns_v = other.columns();
+
+            Array::delete_data(data, rows_v);
 
             // Allocate memory for the rows of the array
             data = new double* [rows_v];
 
             // Allocate memory for the columns of the array
-            for (int i = 0; i < rows_v; i++)
+            for (int i = 0; i < rows_v; i++) {
                 data[i] = new double[columns_v];
+            }
+
+            // todo why doesn;t this work?
+            // Allocate memory for the rows of the array
+            //Array::allocate_data(new_data, rows_v, columns_v);
+
+//            std::cout << data[0][0] << std::endl;
+//            std::cout << other.data[0][0] << std::endl;
 
             for (int i = 0; i < rows_v; i++) {
                 for (int j = 0; j < columns_v; j++) {
                     data[i][j] = other.data[i][j];
                 }
             }
-        }
 
-        dtype_value = other.dtype();
+            dtype_value = other.dtype();
+        }
 
         return *this;
     }
@@ -295,11 +282,10 @@ public:
 
     // DESTRUCTOR
     ~Array(){
-        for (int i = 0; i < rows_v; i++)
-            delete[] data[i];
-        delete[] data;
+        delete_data(data, rows_v);
     }
 
+    // todo when the array is 1x1 print without brackets, same for 1d (only one bracket)
     void print() const {
 
         std::vector<std::string> output;
@@ -527,17 +513,19 @@ public:
     }
 
     Array sum() const {
-        auto *result_data = new double;
+        double **result_data;
+        result_data = new double*[1];
+        result_data[0] = new double[1];
 
-        *result_data = 0;
+        result_data[0][0] = 0;
 
         for (int i = 0; i < rows_v; i++){
             for (int j = 0; j < columns_v; j++){
-                *result_data += data[i][j];
+                result_data[0][0] += data[i][j];
             }
         }
 
-        Array result = transformDataToArray(result_data, 1);
+        Array result = Array(result_data, 1,1);
 
         return result;
     }
@@ -570,6 +558,8 @@ public:
         rows_v = columns_v;
         columns_v = temp;
 
+        Array::delete_data(data, columns_v);
+
         data = result;
     }
 
@@ -598,7 +588,7 @@ public:
             }
         }
 
-        return Array(transformDataToArray(result, a1.rows(), a2.columns()));
+        return Array(result, a1.rows(), a2.columns());
     }
 
     // identity
@@ -619,14 +609,16 @@ public:
             }
         }
 
-        Array result = transformDataToArray(data, n, n);
-
-        return result;
+        return Array(data, n, n);
     }
 
     void inverse() {
 
         int n = rows();
+
+        if (n != columns()){
+            throw std::invalid_argument("Matrix must be square");
+        }
 
         auto** result = new double*[n];
         for (int i = 0; i < n; i++) {
@@ -747,43 +739,54 @@ private:
 
         return result;
     }
+    */
 
     // sum along rows
     Array sum_rows() const{
-        auto *result_data = new double[rows_v];
+
+        // Allocate memory for the rows of the array
+        double **result_data;
+
+        Array::allocate_data(result_data, rows_v, 1);
+
+        result_data = new double* [rows_v];
+
+        // Allocate memory for the columns of the array
+        for (int i = 0; i < rows_v; i++)
+            result_data[i] = new double[1];
 
         for (int i = 0; i < rows_v; i++){
-            double sum = 0;
+            auto *sum = new double[1];
             for (int j = 0; j < columns_v; j++){
-                sum += data[i][j];
+                sum[0] += data[i][j];
             }
             result_data[i] = sum;
         }
 
-        Array result = transformDataToArray(result_data, rows_v);
+        Array result = Array(result_data, rows_v, 1);
 
         return result;
     }
 
     Array sum_columns() const{
-        auto *result_data = new double[columns_v];
+
+        // Allocate memory for the rows of the array
+        double **result_data;
+
+        Array::allocate_data(result_data, 1, columns_v);
 
         for (int i = 0; i < columns_v; i++){
             double sum = 0;
             for (int j = 0; j < rows_v; j++){
                 sum += data[j][i];
             }
-            result_data[i] = sum;
+            result_data[0][i] = sum;
         }
 
-        Array result = transformDataToArray(result_data, columns_v);
-
-        result.transpose();
+        Array result = Array(result_data, 1, columns_v);
 
         return result;
     }
-
-
 
 };
 
@@ -801,6 +804,52 @@ namespace {
         }
         std::cout << "])" << std::endl;
     }
+
+    // multiply by scalar
+    Array operator*(const Array other, const double &factor) {
+
+        std::list<std::list<double>> result_data = {};
+
+        for (int i = 0; i < other.rows(); i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < other.columns(); j++) {
+                row.push_back(other.data[i][j] * factor);
+            }
+            result_data.push_back(row);
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+    Array operator*(const double &factor, const Array other) {
+
+        std::list<std::list<double>> result_data = {};
+
+        for (int i = 0; i < other.rows(); i++) {
+            std::list<double> row = {};
+            for (int j = 0; j < other.columns(); j++) {
+                row.push_back(other.data[i][j] * factor);
+            }
+            result_data.push_back(row);
+        }
+
+        Array result = Array(result_data);
+
+        return result;
+    }
+
+//    // Overload the operator for other types
+//    MyType operator*(const MyType& lhs, int rhs) {
+//        // Implement the multiplication behavior for MyType and int
+//        // Return a new instance of MyType with the result of the multiplication
+//    }
+//
+//    MyType operator*(int lhs, const MyType& rhs) {
+//        // Implement the multiplication behavior for int and MyType
+//        // Return a new instance of MyType with the result of the multiplication
+//    }
+//
 }
 
 
