@@ -17,9 +17,9 @@ std::string clean(std::string& input){
         return output;
 }
 
-std::vector<std::vector<int>> parse_input(std::string& input){
+std::vector<std::vector<double>> parse_input(std::string& input) {
 
-    std::vector<std::vector<int>> output;
+    std::vector<std::vector<double>> output;
 
     // Remove the outer curly braces
     input = input.substr(1, input.size() - 2);
@@ -29,7 +29,7 @@ std::vector<std::vector<int>> parse_input(std::string& input){
     std::string item;
     while (std::getline(ss, item, '}')) {
         // Split the inner vectors by ','
-        std::vector<int> inner;
+        std::vector<double> inner;
         std::stringstream inner_ss(item);
         std::string inner_item;
         while (std::getline(inner_ss, inner_item, ',')) {
@@ -41,7 +41,7 @@ std::vector<std::vector<int>> parse_input(std::string& input){
                 continue;
             }
 
-            inner.push_back(std::stoi(inner_item));
+            inner.push_back(std::stod(inner_item));
         }
         // Add the inner vector to the outer vector
         output.push_back(inner);

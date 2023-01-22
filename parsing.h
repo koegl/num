@@ -9,7 +9,9 @@
 #include <vector>
 #include <iostream>
 
-std::vector<std::vector<int>> parse_input( std::string& input);
+std::vector<std::vector<double>> parse_input( std::string& input);
+
+int ret(std::string& input);
 
 std::string clean(std::string& input);
 
