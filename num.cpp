@@ -519,8 +519,50 @@ Array Array::mult(const Array &a1, const Array &a2){
     return Array(result);
 }
 
+double Array::determinant_rec(const std::vector<std::vector<double>>& matrix, unsigned long size) const {
+
+    if (size == 1){
+        return matrix.at(0).at(0);
+    }
+
+    if (size == 2){
+        return matrix.at(0).at(0) * matrix.at(1).at(1) - matrix.at(0).at(1) * matrix.at(1).at(0);
+    }
+
+    double det = 0;
+
+    for (int i = 0; i < size; i++){
+        std::vector<std::vector<double>> submatrix(size - 1, std::vector<double>(size - 1));
+
+        for (int j = 1; j < size; j++){
+            for (int k = 0; k < size; k++){
+                if (k < i){
+                    submatrix.at(j - 1).at(k) = matrix.at(j).at(k);
+                }
+                else if (k > i){
+                    submatrix.at(j - 1).at(k - 1) = matrix.at(j).at(k);
+                }
+            }
+        }
+
+        det += pow(-1, i) * matrix.at(0).at(i) * determinant_rec(submatrix, size - 1);
+    }
+
+    return det;
+}
+
+double Array::determinant() const {
+
+    if (rows_v != columns_v){
+        throw std::invalid_argument("Matrix must be square");
+    }
+
+    return determinant_rec(data, rows_v);
+}
 
 
+
+}
 
 /*
 

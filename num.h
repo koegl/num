@@ -52,6 +52,8 @@ public:
     double sum() const;
     Array sum(int axis);
     static Array mult(const Array &a1, const Array &a2);
+    double determinant_rec(const std::vector<std::vector<double>>& matrix, unsigned long size) const;
+    double determinant() const;
 
 
     // VARIABLES
