@@ -662,6 +662,42 @@ void Array::inverse() {
     data = result;
 }
 
+void Array::sort(bool reverse){
+
+    if (rows_v != 1 && columns_v != 1){
+        throw std::invalid_argument("Array must be 1D");
+    }
+
+    unsigned long length_of_array = rows_v * columns_v;
+
+    if (rows_v == 1 && columns_v == 1){
+        return;
+    }
+
+    std::vector<double> new_data;
+
+    if (columns_v == 1){
+        for (int i = 0; i < rows_v; i++){
+            new_data.push_back(data.at(i).at(0));
+        }
+    }
+    else {
+        new_data = data.at(0);
+    }
+
+    // quicksort
+    quicksort(new_data, 0, length_of_array - 1, reverse);
+
+    if (columns_v == 1){
+        for (int i = 0; i < rows_v; i++){
+            data.at(i).at(0) = new_data.at(i);
+        }
+    }
+    else {
+        data.at(0) = new_data;
+    }
+}
+
 Array Array::diag(int n, double diag) {
 
     std::vector<std::vector<double>> result(n, std::vector<double>(n));
@@ -779,10 +815,6 @@ double pop(int idx) {
     return popped_value;
 }
 
-void sort(bool reverse = false){
-    // quicksort
-    quicksort(data, 0, length_of_array - 1, reverse);
-}
 
 Array nonzero() const {
     std::list<double> result_data = {};

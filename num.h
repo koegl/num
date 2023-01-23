@@ -8,9 +8,11 @@
 #include <list>
 #include <iostream>
 #include <typeinfo>
-#include<math.h>
+#include <cmath>
 
 #include "parsing.h"
+#include "sorting.h"
+
 
 class Array {
 public:
@@ -59,6 +61,7 @@ public:
 
     void transpose();
     void inverse();
+    void sort(bool reverse=false);
 
     static Array diag(int n, double diag=1);
     static Array eye(int n);
