@@ -662,7 +662,7 @@ void Array::inverse() {
     data = result;
 }
 
-Array Array::eye(int n, double diag) {
+Array Array::diag(int n, double diag) {
 
     std::vector<std::vector<double>> result(n, std::vector<double>(n));
 
@@ -680,8 +680,12 @@ Array Array::eye(int n, double diag) {
     return Array(result);
 }
 
+Array Array::eye(int n) {
+    return Array::diag(n, 1);
+}
+
 Array Array::zeros(int n) {
-    return Array::eye(n, 0);
+    return Array::diag(n, 0);
 }
 
 /*
