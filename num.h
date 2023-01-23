@@ -40,8 +40,8 @@ public:
     // METHODS
     void print() const;
 
-    int rows() const;
-    int columns() const;
+    unsigned long rows() const;
+    unsigned long columns() const;
     std::string get_dtype() const;
 
     void checkIndex(int i, int j) const;

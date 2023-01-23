@@ -13,7 +13,7 @@
 
 #include "num.h"
 
-
+// todo check if the input string starts and ends with two curly brackets
 // CONSTRUCTORS
 Array::Array() {
     rows_v = 0;
@@ -259,11 +259,11 @@ Array &Array::operator=(const Array &other) {
 
 
 // METHODS
-int Array::rows() const {
+unsigned long Array::rows() const {
     return rows_v;
 }
 
-int Array::columns() const {
+unsigned long Array::columns() const {
     return columns_v;
 }
 
