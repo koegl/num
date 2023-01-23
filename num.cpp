@@ -180,6 +180,26 @@ Array Array::operator*(const Array &other) const { // element-wise multiplicatio
     return result;
 }
 
+Array operator*(const double &factor, const Array& other) {
+
+    std::vector<std::vector<double>> result_data;
+
+    for (int i = 0; i < other.rows(); i++) {
+        std::vector<double> row;
+        row.reserve(other.columns());
+
+        for (int j = 0; j < other.columns(); j++) {
+            row.push_back(other.data.at(i).at(j) * factor);
+        }
+        result_data.push_back(row);
+    }
+
+    Array result = Array(result_data);
+
+    return result;
+}
+
+
 Array Array::operator*(const double &factor) const {
 
     Array result = Array(*this);

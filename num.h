@@ -77,4 +77,6 @@ private:
     void print_1d() const;
 };
 
+Array operator*(const double &factor, const Array& other);
+
 #endif //NUMPY_CPP_NUMPY_H
