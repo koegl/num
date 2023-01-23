@@ -236,6 +236,11 @@ double& Array::operator()(int x, int y){
 }
 
 double Array::operator()(int x) {
+
+    if (rows_v != 1 && columns_v != 1) {
+        throw std::invalid_argument("Array must be 1D to access element by index.\nError in line " + std::to_string(__LINE__));
+    }
+
     return data.at(x).at(0);
 }
 
