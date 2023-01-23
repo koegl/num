@@ -662,14 +662,14 @@ void Array::inverse() {
     data = result;
 }
 
-Array Array::eye(int n) {
+Array Array::eye(int n, double diag) {
 
     std::vector<std::vector<double>> result(n, std::vector<double>(n));
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (i == j) {
-                result.at(i).at(j) = 1;
+                result.at(i).at(j) = diag;
             }
             else {
                 result.at(i).at(j) = 0;
@@ -678,6 +678,10 @@ Array Array::eye(int n) {
     }
 
     return Array(result);
+}
+
+Array Array::zeros(int n) {
+    return Array::eye(n, 0);
 }
 
 /*
@@ -821,199 +825,6 @@ static Array mult(const Array &a1, const Array &a2){
     return Array(result, a1.rows(), a2.columns());
 }
 
-// identity
-static Array eye(int n) {
-
-    double **result;
-
-    Array::allocate_data(&result, n, n);
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (i == j) {
-                result[i][j] = 1;
-            }
-            else {
-                result[i][j] = 0;
-            }
-        }
-    }
-
-    return Array(result, n, n);
-}
-
-void inverse() {
-
-    int n = rows();
-
-    if (n != columns()){
-        throw std::invalid_argument("Matrix must be square");
-    }
-
-    double** result;
-    allocate_data(&result, n, n);
-
-    double** temp;
-    allocate_data(&temp, n, n);
-
-    double** identity;
-    allocate_data(&identity, n, n);
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (i == j) {
-                identity[i][j] = 1;
-            }
-            else {
-                identity[i][j] = 0;
-            }
-        }
-    }
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            temp[i][j] = data[i][j];
-        }
-    }
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            result[i][j] = identity[i][j];
-        }
-    }
-
-    for (int i = 0; i < n; i++) {
-
-        double pivot = temp[i][i];
-        for (int j = 0; j < n; j++) {
-            temp[i][j] /= pivot;
-            result[i][j] /= pivot;
-        }
-
-        for (int j = 0; j < n; j++) {
-            if (j != i) {
-                double factor = temp[j][i];
-                for (int k = 0; k < n; k++) {
-                    temp[j][k] -= factor * temp[i][k];
-                    result[j][k] -= factor * result[i][k];
-                }
-            }
-        }
-    }
-
-data = result;
-}
-
-std::string dtype() const{
-    return dtype_value;
-}
-
-static void allocate_data(double ***data_array, int rows, int columns) {
-    *data_array = new double*[rows];
-    for (int i = 0; i < rows; i++) {
-        (*data_array)[i] = new double[columns];
-    }
-}
-
-static void delete_data(double** data_to_delete, int n_rows){
-    for (int i = 0; i < n_rows; i++){
-        delete[] data_to_delete[i];
-    }
-    delete[] data_to_delete;
-}
-
-// sum along rows
-Array sum_rows() const{
-
-    // Allocate memory for the rows of the array
-    double **result_data;
-
-    Array::allocate_data(&result_data, rows_v, 1);
-
-    for (int i = 0; i < rows_v; i++){
-        double sum = 0;
-        for (int j = 0; j < columns_v; j++){
-            sum += data[i][j];
-        }
-        result_data[i][0] = sum;
-    }
-
-    Array result = Array(result_data, rows_v, 1);
-
-
-    return result;
-}
-
-Array sum_columns() const{
-
-    // Allocate memory for the rows of the array
-    double **result_data;
-
-    Array::allocate_data(&result_data, 1, columns_v);
-
-    for (int i = 0; i < columns_v; i++){
-        double sum = 0;
-        for (int j = 0; j < rows_v; j++){
-            sum += data[j][i];
-        }
-        result_data[0][i] = sum;
-    }
-
-    Array result = Array(result_data, 1, columns_v);
-
-    return result;
-}
-
-};
-
-namespace {
-void print(const Array &myArray);
-
-void print(const Array &myArray) {
-
-    std::cout << "Array([";
-    for (int i = 0; i < myArray.rows(); i++) {
-        std::cout << myArray.data[i];
-        if (i != myArray.columns() - 1) {
-            std::cout << ", ";
-        }
-    }
-    std::cout << "])" << std::endl;
-}
-
-// multiply by scalar
-Array operator*(const Array other, const double &factor) {
-
-    std::list<std::list<double>> result_data = {};
-
-    for (int i = 0; i < other.rows(); i++) {
-        std::list<double> row = {};
-        for (int j = 0; j < other.columns(); j++) {
-            row.push_back(other.data[i][j] * factor);
-        }
-        result_data.push_back(row);
-    }
-
-    Array result = Array(result_data);
-
-    return result;
-}
-Array operator*(const double &factor, const Array other) {
-
-    std::list<std::list<double>> result_data = {};
-
-    for (int i = 0; i < other.rows(); i++) {
-        std::list<double> row = {};
-        for (int j = 0; j < other.columns(); j++) {
-            row.push_back(other.data[i][j] * factor);
-        }
-        result_data.push_back(row);
-    }
-
-    Array result = Array(result_data);
-
-    return result;
-}
  */
 
 

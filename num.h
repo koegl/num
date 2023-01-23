@@ -60,7 +60,8 @@ public:
     void transpose();
     void inverse();
 
-    static Array eye(int n);
+    static Array eye(int n, double diag=1);
+    static Array zeros(int n);
 
 
     // VARIABLES
