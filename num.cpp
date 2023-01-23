@@ -33,7 +33,9 @@ Array::Array(std::string &input) {
     columns_v = data.at(0).size();
     dimensions = {rows_v, columns_v};
     dtype = "int";
-    summed = -1;
+}
+
+Array::Array(const char input[]) : Array(std::string(input)) {
 }
 
 Array::Array(const Array &other) {

@@ -17,7 +17,8 @@ public:
 
     // CONSTRUCTORS
     Array();
-    explicit Array(std::string &input);
+    explicit Array(std::string input);
+    explicit Array(const char input[]);
     Array(const Array &other);
     Array(int **new_data, int rows, int columns, const std::string& new_dtype="float64");
     explicit Array(const std::vector<std::vector<double>>& new_data, const std::string& new_dtype="float64");
