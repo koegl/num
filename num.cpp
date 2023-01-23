@@ -573,9 +573,68 @@ void Array::transpose() {
     std::swap(rows_v, columns_v);
 }
 
-}
+void Array::inverse() {
 
+    if (determinant() == 0){
+        throw std::invalid_argument("Matrix is singular (det = 0), thus not invertible");
+    }
 
+    unsigned long n = rows();
+
+    if (n != columns()){
+        throw std::invalid_argument("Matrix must be square");
+    }
+
+    // create a vector result
+    std::vector<std::vector<double>> result(n, std::vector<double>(n));
+
+    std::vector<std::vector<double>> temp(n, std::vector<double>(n));
+
+    std::vector<std::vector<double>> identity(n, std::vector<double>(n));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) {
+                identity.at(i).at(j) = 1;
+            }
+            else {
+                identity.at(i).at(j) = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            temp.at(i).at(j) = data.at(i).at(j);
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            result.at(i).at(j) = identity.at(i).at(j);
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+
+        double pivot = temp.at(i).at(i);
+        for (int j = 0; j < n; j++) {
+            temp.at(i).at(j) /= pivot;
+            result.at(i).at(j) /= pivot;
+        }
+
+        for (int j = 0; j < n; j++) {
+            if (j != i) {
+                double factor = temp.at(j).at(i);
+                for (int k = 0; k < n; k++) {
+                    temp.at(j).at(k) -= factor * temp.at(i).at(k);
+                    result.at(j).at(k) -= factor * result.at(i).at(k);
+                }
+            }
+        }
+    }
+
+    data = result;
 }
 
 /*

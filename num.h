@@ -8,6 +8,7 @@
 #include <list>
 #include <iostream>
 #include <typeinfo>
+#include<math.h>
 
 #include "parsing.h"
 
@@ -49,6 +50,7 @@ public:
     double min() const;
     std::vector<int> argmax() const;
     std::vector<int> argmin() const;
+
     double sum() const;
     Array sum(int axis);
     static Array mult(const Array &a1, const Array &a2);
@@ -56,6 +58,8 @@ public:
     double determinant() const;
 
     void transpose();
+    void inverse();
+
 
     // VARIABLES
     std::vector<std::vector<double>> data;
