@@ -23,10 +23,9 @@ Array::Array() {
     dtype = "None";
     // initialize vector dimensions
     dimensions = {0};
-    summed = -1;
 }
 
-Array::Array(std::string &input) {
+Array::Array(std::string input) {
 
     data = parse_input(input);
     rows_v = data.size();
@@ -48,8 +47,6 @@ Array::Array(const Array &other) {
     for (const auto& row: other.data) {
         data.push_back(row);
     }
-
-    summed = other.summed;
 }
 
 Array::Array(int **new_data, int rows, int columns, const std::string& new_dtype) {
@@ -68,8 +65,6 @@ Array::Array(int **new_data, int rows, int columns, const std::string& new_dtype
         }
         data.push_back(row);
     }
-
-    summed = -1;
 }
 
 Array::Array(const std::vector<std::vector<double>>& new_data, const std::string &new_dtype) {
@@ -82,8 +77,6 @@ Array::Array(const std::vector<std::vector<double>>& new_data, const std::string
     for (const auto& row: new_data) {
         data.push_back(row);
     }
-
-    summed = -1;
 }
 
 Array::Array(const std::vector<double> &new_data, int axis, const std::string &new_dtype) {
@@ -114,8 +107,6 @@ Array::Array(const std::vector<double> &new_data, int axis, const std::string &n
     else {
         throw std::invalid_argument("Axis must be 0 or 1.\nError in line " + std::to_string(__LINE__));
     }
-
-    summed = axis;
 }
 
 
@@ -261,8 +252,6 @@ Array &Array::operator=(const Array &other) {
         for (const auto& row: other.data) {
             data.push_back(row);
         }
-
-        summed = other.summed;
     }
 
     return *this;
@@ -284,7 +273,7 @@ std::string Array::get_dtype() const {
 
 void Array::print() const {
 
-    if (summed == 0 || summed == 1){
+    if (rows_v == 1 || columns_v == 1){
         print_1d();
     }
     else {
@@ -357,7 +346,7 @@ void Array::print() const {
 
 void Array::print_1d() const{
 
-    if (summed == 1) {
+    if (rows_v == 1) {
 
         std::cout << "[";
 
@@ -366,14 +355,14 @@ void Array::print_1d() const{
         }
         std::cout << data.at(0).at(columns_v - 1) << "]" << std::endl;
     }
-    else if (summed == 0) {
+    else if (columns_v == 1) {
 
-        std::cout << "[[" << data.at(0).at(0) << "]," << std::endl;
+        std::cout << "[";
 
-        for (int i = 1; i < rows_v - 1; i++) {
-            std::cout << " [" << data.at(i).at(0) << "]," << std::endl;
+        for (int i = 0; i < rows_v - 1; i++) {
+            std::cout << data.at(i).at(0) << ", ";
         }
-        std::cout << " [" << data.at(rows_v - 1).at(0) << "]]" << std::endl;
+        std::cout << data.at(rows_v - 1).at(0) << "]" << std::endl;
     }
 }
 
@@ -460,10 +449,6 @@ std::vector<int> Array::argmin() const{
     return indices;
 }
 
-void Array::set_summed(int axis){
-    summed = axis;
-}
-
 double Array::sum() const {
     double sum = 0;
 
@@ -477,7 +462,7 @@ double Array::sum() const {
 }
 
 Array Array::sum(int axis) {
-    if (axis == 1){
+    if (axis == 0){
 
         std::vector<double> sum(columns_v);
 
@@ -488,22 +473,20 @@ Array Array::sum(int axis) {
         }
 
         Array ret = Array(sum, 1);
-        ret.set_summed(1);
 
         return ret;
     }
-    else if (axis == 0){
+    else if (axis == 1){
 
         std::vector<double> sum(rows_v);
 
         for (int i = 0; i < columns_v; i++){
             for (int j = 0; j < rows_v; j++){
-                sum.at(i) += data.at(i).at(j);
+                sum.at(j) += data.at(j).at(i);
             }
         }
 
         Array ret = Array(sum, 0);
-        ret.set_summed(0);
 
         return ret;
     }

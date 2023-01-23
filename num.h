@@ -66,11 +66,6 @@ private:
     std::vector<unsigned long > dimensions;
 
     void print_1d() const;
-
-    int summed;
-    void set_summed(int axis);
-
-    // void print() const;
 };
 
 #endif //NUMPY_CPP_NUMPY_H
