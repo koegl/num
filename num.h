@@ -60,6 +60,8 @@ public:
     void transpose();
     void inverse();
 
+    static Array eye(int n);
+
 
     // VARIABLES
     std::vector<std::vector<double>> data;

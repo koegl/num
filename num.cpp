@@ -642,6 +642,24 @@ void Array::inverse() {
     data = result;
 }
 
+Array Array::eye(int n) {
+
+    std::vector<std::vector<double>> result(n, std::vector<double>(n));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) {
+                result.at(i).at(j) = 1;
+            }
+            else {
+                result.at(i).at(j) = 0;
+            }
+        }
+    }
+
+    return Array(result);
+}
+
 /*
 
 
@@ -756,37 +774,6 @@ Array cumprod() const {
     Array result = Array(result_data);
 
     return result;
-}
-
-Array sum(int axis) const {
-    if (axis == 0){
-        return sum_rows();
-    }
-    else if (axis == 1){
-        return sum_columns();
-    }
-    else {
-        throw std::invalid_argument("Axis must be 0 or 1");
-    }
-}
-
-void transpose() {
-    double **result;
-    allocate_data(&result, columns_v, rows_v);
-
-    for (int i = 0; i < rows_v; i++) {
-        for (int j = 0; j < columns_v; j++) {
-            result[j][i] = data[i][j];
-        }
-    }
-
-    int temp = rows_v;
-    rows_v = columns_v;
-    columns_v = temp;
-
-    Array::delete_data(data, columns_v);
-
-    data = result;
 }
 
 static Array mult(const Array &a1, const Array &a2){
