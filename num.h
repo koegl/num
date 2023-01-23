@@ -60,8 +60,10 @@ public:
     void transpose();
     void inverse();
 
-    static Array eye(int n, double diag=1);
+    static Array diag(int n, double diag=1);
+    static Array eye(int n);
     static Array zeros(int n);
+    static Array matmul(const Array &a1, const Array &a2);
 
 
     // VARIABLES
