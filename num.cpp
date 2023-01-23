@@ -189,6 +189,19 @@ Array Array::operator*(const Array &other) const { // element-wise multiplicatio
     return result;
 }
 
+Array Array::operator*(const double &factor) const {
+
+    Array result = Array(*this);
+
+    for (int i = 0; i < rows_v; i++) {
+        for (int j = 0; j < columns_v; j++) {
+            result(i, j) *= factor;
+        }
+    }
+
+    return result;
+}
+
 Array Array::operator/(const Array &other) const {
 
     if (rows_v != other.rows() || columns_v != other.columns()) {

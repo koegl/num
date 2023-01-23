@@ -29,6 +29,7 @@ public:
     Array operator+(const Array &other) const;
     Array operator-(const Array &other) const;
     Array operator*(const Array &other) const;
+    Array operator*(const double &factor) const;
     Array operator/(const Array &other) const;
     double& operator()(int x, int y);
     double operator()(int x);
