@@ -55,6 +55,7 @@ public:
     double determinant_rec(const std::vector<std::vector<double>>& matrix, unsigned long size) const;
     double determinant() const;
 
+    void transpose();
 
     // VARIABLES
     std::vector<std::vector<double>> data;

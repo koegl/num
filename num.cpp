@@ -560,6 +560,20 @@ double Array::determinant() const {
     return determinant_rec(data, rows_v);
 }
 
+void Array::transpose() {
+    std::vector<std::vector<double>> result(columns_v, std::vector<double>(rows_v));
+
+    for (int i = 0; i < rows_v; i++){
+        for (int j = 0; j < columns_v; j++){
+            result.at(j).at(i) = data.at(i).at(j);
+        }
+    }
+
+    data = result;
+    std::swap(rows_v, columns_v);
+}
+
+}
 
 
 }
